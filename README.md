@@ -1,14 +1,14 @@
 # Rainyun-Qiandao-V2 (Selenium)
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/scfcn/Rainyun-Qiandao/rainyun-sign.yml?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chizw/Rainyun-Qiandao/rainyun-sign.yml?style=flat-square)
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg?style=flat-square)
 ![License](https://img.shields.io/badge/license-GPL%20v3.0-green.svg?style=flat-square)
-![GitHub Stars](https://img.shields.io/github/stars/scfcn/Rainyun-Qiandao?style=flat-square)
-![GitHub Forks](https://img.shields.io/github/stars/scfcn/Rainyun-Qiandao?style=flat-square)
+![GitHub Stars](https://img.shields.io/github/stars/chizw/Rainyun-Qiandao?style=flat-square)
+![GitHub Forks](https://img.shields.io/github/stars/chizw/Rainyun-Qiandao?style=flat-square)
 
 ## Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=scfcn/Rainyun-Qiandao&type=Date)](https://star-history.com/#scfcn/Rainyun-Qiandao&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=chizw/Rainyun-Qiandao&type=Date)](https://star-history.com/#chizw/Rainyun-Qiandao&Date)
 
 ## 项目概述
 
@@ -72,7 +72,7 @@ Rainyun-Qiandao-V2 是一个基于 Selenium 和 ICR（Image Captcha Recognition�
 ### 2. 克隆项目
 
 ```bash
-git clone https://github.com/scfcn/Rainyun-Qiandao.git
+git clone https://github.com/chizw/Rainyun-Qiandao.git
 cd Rainyun-Qiandao
 ```
 
@@ -399,9 +399,10 @@ pip install -r requirements.txt
 - [Selenium](https://www.selenium.dev/) - 自动化测试工具
 - [webdriver-manager](https://github.com/SergeyPirogov/webdriver_manager) - ChromeDriver 自动管理工具
 - [OpenCV](https://opencv.org/) - 开源计算机视觉库
+- [LeapYa](https://github.com/LeapYa/Rainyun-Qiandao) - 功能灵感与代码
 
 ---
 
-![GitHub last commit](https://img.shields.io/github/last-commit/scfcn/Rainyun-Qiandao?style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues/scfcn/Rainyun-Qiandao?style=flat-square)
-![GitHub closed issues](https://img.shields.io/github/issues-closed/scfcn/Rainyun-Qiandao?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/chizw/Rainyun-Qiandao?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/chizw/Rainyun-Qiandao?style=flat-square)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/chizw/Rainyun-Qiandao?style=flat-square)
