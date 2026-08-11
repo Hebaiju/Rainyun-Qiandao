@@ -8,6 +8,8 @@ on:
 jobs:
   sign-in:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write  # 允许删除缓存
     steps:
       - uses: actions/checkout@v3
       
