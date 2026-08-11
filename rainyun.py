@@ -792,7 +792,7 @@ def run_all_accounts():
             logger.info(f"  - {masked_user}: 重试 {count} 次, 最终{final_status}")
     
     failed_count = len(accounts) - success_count
-    notify_only_failure = os.getenv("NOTIFY_ONLY_FAILURE", "true").lower() == "true"
+    notify_only_failure = os.getenv("NOTIFY_ONLY_FAILURE", "false").lower() == "true"
     
     if accounts:
         if notify_only_failure and failed_count == 0:
