@@ -44,9 +44,6 @@ Rainyun-Qiandao-V2 是一个基于 Selenium 和 ICR（Image Captcha Recognition�
 - ✅ 支持统一通知，汇总所有账户签到结果
 - ✅ 支持7种通知推送方式（Push+、SMTP、Bark、钉钉、飞书、Telegram、Server酱）
 
-### 自动更新
-- ✅ 支持自动更新功能，检测到新版本或版本过低时自动同步
-
 ## 技术栈
 
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)
@@ -138,7 +135,6 @@ RAINYUN_USER=your_username
 RAINYUN_PASS=your_password
 DEBUG=false
 HEADLESS=false
-AUTO_UPDATE=true
 MAX_WORKERS=2
 MAX_RETRIES=1
 ```
@@ -154,7 +150,6 @@ pass2
 pass3
 DEBUG=false
 HEADLESS=false
-AUTO_UPDATE=true
 MAX_WORKERS=2
 MAX_RETRIES=1
 ```
@@ -203,7 +198,6 @@ MAX_RETRIES=1
 | RAINYUN_PASS | 雨云密码（支持多行，每行一个密码，需与用户名数量匹配） | - | ✅ |
 | HEADLESS | 是否以无头模式运行（true/false） | false | ❌ |
 | DEBUG | 是否启用调试模式（true/false） | false | ❌ |
-| AUTO_UPDATE | 是否启用自动更新（true/false） | true | ❌ |
 | MAX_WORKERS | 最大并发线程数 | 2 | ❌ |
 | MAX_RETRIES | 最大重试次数 | 1 | ❌ |
 | GITHUB_ACTIONS | 在 GitHub Actions 环境中自动设置为 true，用于强制无头模式 | false | ❌ |
@@ -252,46 +246,6 @@ MAX_RETRIES=1
 - 等待所有账户完成后统一重试
 - 每轮重试间隔 5-15 秒随机时间
 - 可配置最大重试次数
-
-## 自动更新功能
-
-脚本支持自动更新功能，可以检测到新版本或版本过低时自动同步到最新版本。
-
-### 更新触发条件
-
-- 发现新版本（`LATEST_VERSION > ver`）
-- 版本过低（`ver < MIN_VERSION`）
-
-### 更新方式
-
-1. **优先使用 Git 同步**（如果系统已安装 Git）
-   - 执行 `git fetch --all` 获取最新代码
-   - 执行 `git reset --hard origin/main` 强制同步到最新版本
-
-2. **Git 失败时回退到直接下载**
-   - 从 GitHub 下载最新版本的 `rainyun.py` 文件
-   - 覆盖当前文件
-
-3. **下载失败时提示手动更新**
-   - 显示更新地址，引导用户手动更新
-
-### 配置方式
-
-通过环境变量 `AUTO_UPDATE` 控制：
-
-```bash
-# 启用自动更新（默认）
-export AUTO_UPDATE=true
-
-# 禁用自动更新
-export AUTO_UPDATE=false
-```
-
-或在 `.env` 文件中配置：
-
-```env
-AUTO_UPDATE=true
-```
 
 ## 常见问题
 
