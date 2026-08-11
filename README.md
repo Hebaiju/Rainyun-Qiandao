@@ -347,13 +347,16 @@ pip install -r requirements.txt
 - 使用本工具应遵守雨云官方的用户协议和相关规定
 - 作者不对因使用本工具可能产生的任何后果负责
 
-## 鸣谢
+## 工具依赖
 
-- [SerendipityR-2022](https://github.com/SerendipityR-2022) - 项目初始版本
 - [Selenium](https://www.selenium.dev/) - 自动化测试工具
 - [webdriver-manager](https://github.com/SergeyPirogov/webdriver_manager) - ChromeDriver 自动管理工具
 - [OpenCV](https://opencv.org/) - 开源计算机视觉库
-- [LeapYa](https://github.com/LeapYa/Rainyun-Qiandao) - 功能灵感与代码
+
+## 鸣谢
+
+- [SerendipityR-2022](https://github.com/SerendipityR-2022) - 项目初始版本
+- [LeapYa](https://github.com/LeapYa/Rainyun-Qiandao) - 多账号并发签到、浏览器指纹随机化注入、Cookie 持久化与失效检测、Docker ChromeDriver 适配逻辑
 
 ---
 
