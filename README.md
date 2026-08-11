@@ -201,6 +201,7 @@ MAX_RETRIES=1
 | MAX_WORKERS | 最大并发线程数 | 2 | ❌ |
 | MAX_RETRIES | 最大重试次数 | 1 | ❌ |
 | GITHUB_ACTIONS | 在 GitHub Actions 环境中自动设置为 true，用于强制无头模式 | false | ❌ |
+| NOTIFY_ONLY_FAILURE | 仅在有失败账号时推送通知（true/false） | true | ❌ |
 
 ### 关键设置
 
