@@ -75,6 +75,19 @@ jobs:
             fi
           fi
       
+      - name: 生成用户名哈希
+        id: hash
+        run: |
+          USER_HASH=$(echo -n "${{ secrets.RAINYUN_USER }}" | sha256sum | cut -c1-16)
+          echo "user_hash=$USER_HASH" >> $GITHUB_OUTPUT
+
+      - name: 清理旧Cookie缓存
+        run: |
+          # 列出所有匹配的缓存，删除旧的，只保留最新的
+          gh cache list --key "rainyun-cookies-${{ steps.hash.outputs.user_hash }}-" --json key,id --jq '.[] | .id' | tail -n +2 | xargs -r gh cache delete || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: 确保temp目录存在
         run: mkdir -p temp/cookies
 
@@ -82,9 +95,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: temp/cookies
-          key: rainyun-cookies-${{ secrets.RAINYUN_USER }}
+          key: rainyun-cookies-${{ steps.hash.outputs.user_hash }}-${{ github.run_id }}
           restore-keys: |
-            rainyun-cookies-
+            rainyun-cookies-${{ steps.hash.outputs.user_hash }}-
       
       - name: 执行签到脚本
        # 开启debug查看完整过程
@@ -137,7 +150,7 @@ jobs:
         if: always() && hashFiles('temp/cookies/**') != ''
         with:
           path: temp/cookies
-          key: rainyun-cookies-${{ secrets.RAINYUN_USER }}-${{ github.run_id }}
+          key: rainyun-cookies-${{ steps.hash.outputs.user_hash }}-${{ github.run_id }}
       
       - name: 清理临时文件
         run: rm -rf temp
