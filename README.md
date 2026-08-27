@@ -154,6 +154,28 @@ MAX_WORKERS=2
 MAX_RETRIES=1
 ```
 
+### 分批运行（本地 / 服务器）
+
+适合账号较多、需分多批执行的场景。账号与密钥统一放在 `config.py`（已被 `.gitignore` 忽略，**请勿提交**），按批分组：
+
+```bash
+# 复制模板并填入真实信息
+cp config.example.py config.py
+
+# 运行第 0/1/2/3 批
+python rainyun.py 0
+python rainyun.py 1
+python rainyun.py 2
+python rainyun.py 3
+```
+
+`config.py` 中 `ACCOUNTS` 的每个子列表即一批；`python rainyun.py N` 执行第 N 批。
+每批签到完成后会把结果写入飞书多维表格（按日期分行、账号分列），并通过 PushPlus 推送本批汇总。
+`config.py` 缺失时，会回退到 `RAINYUN_USER` / `RAINYUN_PASS` 环境变量（按 `--size` 切分单批）。
+
+> 调度建议：用 `cron` / 任务计划程序为每个批次建一条定时任务，例如每天 10/12/14/16 点各跑一批。
+> 服务器需安装 Linux 版 Chrome + ChromeDriver（项目已通过 `--headless` 适配 Linux）。
+
 ### 使用 GitHub Actions 自动签到
 
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-Automated-2088FF?style=flat-square&logo=github-actions&logoColor=white)

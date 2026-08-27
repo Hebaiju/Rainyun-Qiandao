@@ -705,14 +705,47 @@ def parse_accounts():
     
     return accounts
 
-def run_all_accounts():
+def _apply_config(config):
+    """把 config.py 的私密配置注入环境变量，供 notify.py / ledger.py 读取。"""
+    env_map = {
+        "PUSH_PLUS_TOKEN": getattr(config, "PUSH_PLUS_TOKEN", ""),
+        "LARK_APP_ID": getattr(config, "LARK_APP_ID", ""),
+        "LARK_APP_SECRET": getattr(config, "LARK_APP_SECRET", ""),
+        "LARK_APP_TOKEN": getattr(config, "LARK_APP_TOKEN", ""),
+        "LARK_TABLE_ID": getattr(config, "LARK_TABLE_ID", ""),
+    }
+    for k, v in env_map.items():
+        if v:
+            os.environ.setdefault(k, v)
+    # 账号铺平进环境变量，供无 config 分组时兜底
+    if hasattr(config, "ACCOUNTS"):
+        flat = [a for grp in config.ACCOUNTS for a in grp]
+        os.environ.setdefault("RAINYUN_USER", "\n".join(u for u, _ in flat))
+        os.environ.setdefault("RAINYUN_PASS", "\n".join(p for _, p in flat))
+
+
+def _get_batches(size=10):
+    """返回批次列表（每批是一个 [(user, pwd), ...] 列表）。
+    优先使用 config.ACCOUNTS 的显式分组；否则把环境变量账号按 size 切分。
+    """
+    try:
+        import config
+        if getattr(config, "ACCOUNTS", None) and isinstance(config.ACCOUNTS[0], list):
+            return config.ACCOUNTS
+    except Exception:
+        pass
+    return [parse_accounts()]
+
+
+def run_all_accounts(accounts=None, batch_idx=0):
     import concurrent.futures
 
     max_retries = int(os.getenv("CHECKIN_MAX_RETRIES", "2"))
     max_workers = int(os.getenv("MAX_WORKERS", "3"))
     stagger_delay = int(os.getenv("MAX_DELAY", "15"))
     
-    accounts = parse_accounts()
+    if accounts is None:
+        accounts = parse_accounts()
     results = {}
     
     for i, (username, password) in enumerate(accounts):
@@ -766,6 +799,15 @@ def run_all_accounts():
                         results[username]['retry_count'] += 1
                         if results[username]['retry_count'] <= max_retries:
                             failed_accounts.append((username, results[username]['password']))
+
+                    # 写入飞书多维表格（按日期 upsert 到对应账号列）
+                    try:
+                        if result and result.get('status') and result.get('points'):
+                            import ledger
+                            if ledger.enabled():
+                                ledger.upsert(username, result['points'])
+                    except Exception as le:
+                        logger.warning(f"写入飞书表格失败（不影响签到）: {le}")
                 except Exception as e:
                     logger.error(f"❌ 账号 {account_idx} 执行异常: {e}")
                     results[username]['retry_count'] += 1
@@ -834,12 +876,30 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
 
-    ver = "2.6 (ICR + Cookie)"
+    # 载入本地私密配置（账号/密码/飞书/PushPlus）。该文件已被 .gitignore 忽略，绝不提交。
+    try:
+        import config
+        _apply_config(config)
+    except Exception:
+        pass
+
+    import argparse
+    parser = argparse.ArgumentParser(description="雨云自动签到（分批）")
+    parser.add_argument("batch", nargs="?", type=int, default=0, help="批次序号，如 0/1/2/3")
+    parser.add_argument("--size", type=int, default=10, help="未使用 config.ACCOUNTS 分组时，按数量切分每批大小")
+    args = parser.parse_args()
+
+    batches = _get_batches(args.size)
+    if args.batch < 0 or args.batch >= len(batches):
+        logger.error(f"批次 {args.batch} 超出范围，当前共 {len(batches)} 批（0~{len(batches) - 1}）")
+        sys.exit(1)
+
+    ver = "2.6 (ICR + Cookie + 分批/飞书记账)"
     logger.info("------------------------------------------------------------------")
-    logger.info(f"雨云自动签到工作流 v{ver}")
+    logger.info(f"雨云自动签到工作流 v{ver}  |  第 {args.batch} 批 / 共 {len(batches)} 批")
     logger.info("------------------------------------------------------------------")
     
     setup_sigchld_handler()
     cleanup_zombie_processes()
     
-    run_all_accounts()
+    run_all_accounts(accounts=batches[args.batch], batch_idx=args.batch)
