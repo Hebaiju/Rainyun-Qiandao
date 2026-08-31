@@ -7,3 +7,6 @@ e-main/
 # 私密配置（含账号密码与密钥），绝不提交
 config.py
 temp_*.py
+
+# ZCode 工具目录
+.workbuddy/

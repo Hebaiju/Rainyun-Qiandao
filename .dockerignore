@@ -1,0 +1,14 @@
+# 双保险：即使改用 COPY . . 也不会把秘密/无用文件打进镜像
+.git
+.github
+.workbuddy
+__pycache__
+temp
+cookies
+docs
+chromedriver
+chromedriver.exe
+*.md
+config.py
+temp_*.py
+.env

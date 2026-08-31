@@ -1,0 +1,2 @@
+*.sh text eol=lf
+run_all.sh text eol=lf

@@ -1,0 +1,25 @@
+# 雨云自动签到 —— 一次性任务容器（非常驻，跑完即退出）
+#
+# 手动跑一次（所有批次）:  docker compose run --rm qiandao
+# 只跑某一批:              docker compose run --rm qiandao python rainyun.py 0
+# 每日定时:                用宿主机 crontab 调度上面这条命令（见 DEPLOY.md）
+#
+# 换账号/换机器：只需要编辑 ./config.py（账号密码、飞书、PushPlus 全在里面）
+services:
+  qiandao:
+    # 直接拉取官方镜像（推荐）：无需克隆仓库、无需本地构建
+    image: ghcr.io/hebaiju/rainyun-qiandao:latest
+    # 想从源码本地构建（改过代码时）：克隆仓库后取消下一行注释
+    # build: .
+    container_name: rainyun-qiandao
+    restart: "no"
+    volumes:
+      # 私密配置：账号密码/飞书/PushPlus（宿主机编辑即可，不进镜像）
+      - ./config.py:/app/config.py:ro
+      # 登录 cookie 持久化：避免每天重新登录+过验证码（务必保留）
+      - ./cookies:/app/temp/cookies
+    environment:
+      MAX_WORKERS: "1"      # 串行执行，单 Chrome 实例，适配 1GB 空闲内存
+      HEADLESS: "true"
+      DEBUG: "false"
+    shm_size: "256m"
