@@ -725,21 +725,37 @@ def _apply_config(config):
 
 
 def _load_env_file(path=".env"):
-    """轻量加载 .env 文件（KEY=VALUE，支持 # 注释与引号），不覆盖已存在的环境变量。
+    """轻量加载 .env 文件（KEY=VALUE），不覆盖已存在的环境变量。
+    - 特殊字符（# @ $ = 引号等）在值中一律按字面读取，无需转义；仅行首 # 视为注释
+    - 值可用 "..." 或 '...' 成对包裹（两端引号会被剥离）
+    - 支持多行 continuation：没有 = 的行追加到上一个键（README 多账户写法）
     与 config.py 二选一使用：config.py 缺失时，.env 提供的值会作为环境变量兜底。
     """
     try:
         if not os.path.exists(path):
             return
+        parsed = {}
+        current_key = None
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if not line or line.startswith("#") or "=" not in line:
+                if not line or line.startswith("#"):
                     continue
-                k, v = line.split("=", 1)
-                k, v = k.strip(), v.strip().strip('"').strip("'")
-                if k:
-                    os.environ.setdefault(k, v)
+                if "=" in line:
+                    current_key, v = line.split("=", 1)
+                    current_key = current_key.strip()
+                    v = v.strip()
+                    if len(v) >= 2 and v[0] == v[-1] and v[0] in ('"', '"'):
+                        v = v[1:-1]
+                    parsed[current_key] = v
+                elif current_key:
+                    v = line
+                    if len(v) >= 2 and v[0] == v[-1] and v[0] in ('"', "'"):
+                        v = v[1:-1]
+                    parsed[current_key] = parsed.get(current_key, "") + "\n" + v
+        for k, v in parsed.items():
+            if k:
+                os.environ.setdefault(k, v)
     except Exception as e:
         logging.getLogger(__name__).warning(f"加载 {path} 失败: {e}")
 

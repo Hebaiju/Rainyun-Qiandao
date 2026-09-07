@@ -3,6 +3,7 @@
 # 注意：config.py 含密码，已被 .gitignore 忽略，请勿提交 / 上传到公开仓库。
 
 # 分批账号：每个子列表为一批。运行时 `python rainyun.py N` 执行第 N 批。
+# 密码可直接写 # @ $ 等特殊字符，无需转义。
 ACCOUNTS = [
     [  # 第 0 批
         ("username1", "password1"),

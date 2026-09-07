@@ -154,6 +154,25 @@ MAX_WORKERS=2
 MAX_RETRIES=1
 ```
 
+### 密码含特殊字符（如 `#` `@` `$`）怎么办
+
+项目已内置安全的 `.env` 解析：值中的 `#` `@` `$` `=` 引号等一律按**字面读取**，无需转义；仅行首 `#` 才是注释。以下写法全部安全：
+
+```env
+RAINYUN_USER=dawn6mist
+door8snow
+cloud8desk
+RAINYUN_PASS=ULdzgj91#uid
+GRhzqr74@kbn
+RNaojz44$ztc
+```
+
+要点：
+- **config.py / .env**：特殊字符直接写，不需要任何转义（推荐）。
+- **shell 环境变量**（方法一）：必须用**单引号**包裹，双引号内 `$` 会被 shell 展开吞掉，如 `export RAINYUN_PASS='RNaojz44$ztc'`。
+- **GitHub Actions Secrets**：直接填写即可，云端注入时自动安全处理。
+- 不要把 `.env` 用 `source` 命令导入 shell（`$` 同样会被吃掉），直接 `python rainyun.py` 运行即可。
+
 ### 分批运行（本地 / 服务器）
 
 适合账号较多、需分多批执行的场景。账号与密钥统一放在 `config.py`（已被 `.gitignore` 忽略，**请勿提交**），按批分组：
