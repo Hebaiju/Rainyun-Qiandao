@@ -724,6 +724,26 @@ def _apply_config(config):
         os.environ.setdefault("RAINYUN_PASS", "\n".join(p for _, p in flat))
 
 
+def _load_env_file(path=".env"):
+    """轻量加载 .env 文件（KEY=VALUE，支持 # 注释与引号），不覆盖已存在的环境变量。
+    与 config.py 二选一使用：config.py 缺失时，.env 提供的值会作为环境变量兜底。
+    """
+    try:
+        if not os.path.exists(path):
+            return
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k:
+                    os.environ.setdefault(k, v)
+    except Exception as e:
+        logging.getLogger(__name__).warning(f"加载 {path} 失败: {e}")
+
+
 def _get_batches(size=10):
     """返回批次列表（每批是一个 [(user, pwd), ...] 列表）。
     优先使用 config.ACCOUNTS 的显式分组；否则把环境变量账号按 size 切分。
@@ -865,6 +885,7 @@ def run_all_accounts(accounts=None, batch_idx=0):
 
 
 if __name__ == "__main__":
+    _load_env_file()  # 先加载 .env（如存在），供下方所有 os.getenv 读取
     timeout = int(os.getenv("TIMEOUT", "15000")) // 1000
     max_delay = int(os.getenv("MAX_DELAY", "5"))
     debug = os.getenv("DEBUG", "false").lower() == "true"

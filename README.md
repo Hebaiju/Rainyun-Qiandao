@@ -207,8 +207,14 @@ python rainyun.py 3
 | TG_BOT_TOKEN | Telegram机器人令牌 | Telegram |
 | TG_USER_ID | Telegram用户ID | Telegram |
 | PUSH_KEY | Server酱密钥 | Server酱 |
+| LARK_APP_ID | 飞书应用 App ID（多维表格记账，需创建飞书自建应用） | 飞书记账 |
+| LARK_APP_SECRET | 飞书应用 App Secret | 飞书记账 |
+| LARK_APP_TOKEN | 飞书多维表格 Base App Token | 飞书记账 |
+| LARK_TABLE_ID | 飞书多维表格 Table ID | 飞书记账 |
 
 5. 工作流将每天 UTC 4 点（UTC+8 12点）自动运行，也可以手动触发
+
+> 飞书记账（可选）：LARK_APP_ID / LARK_APP_SECRET / LARK_APP_TOKEN / LARK_TABLE_ID 四项齐全时，每次签到会把各账号当日积分写入飞书多维表格（日期分行、账号分列，同日重复运行幂等覆盖）。表结构见 `docs/design-signin-record.md`。
 
 ## 配置说明
 

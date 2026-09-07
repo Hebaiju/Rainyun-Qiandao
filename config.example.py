@@ -11,8 +11,7 @@ ACCOUNTS = [
     # 继续按批添加...
 ]
 
-# 飞书多维表格记账（雨云签到记录）
-LEDGER_ENABLED = True
+# 飞书多维表格记账（雨云签到记录）：以下四项凭据齐全即自动启用，无需单独开关
 LARK_APP_ID = "your_app_id"
 LARK_APP_SECRET = "your_app_secret"
 LARK_APP_TOKEN = "your_base_app_token"

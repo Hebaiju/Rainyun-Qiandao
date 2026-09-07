@@ -2,7 +2,7 @@ name: Rainyun 自动签到
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # UTC+8 12点执行
+    - cron: '0 4 * * *'  # UTC+8 12点执行
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -135,6 +135,12 @@ jobs:
 
           # 7. Server 酱推送 - 可选配置
           PUSH_KEY: ${{ secrets.PUSH_KEY }}  # Server 酱密钥（兼容旧版/Turbo版）
+          
+          # 8. 飞书多维表格记账（可选，四项齐全才启用；用于把每日积分写入飞书表）
+          LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
+          LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
+          LARK_APP_TOKEN: ${{ secrets.LARK_APP_TOKEN }}
+          LARK_TABLE_ID: ${{ secrets.LARK_TABLE_ID }}
           
           # 设置无头模式环境变量
           HEADLESS: "true"
