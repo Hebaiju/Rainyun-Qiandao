@@ -233,7 +233,16 @@ python rainyun.py 3
 
 5. 工作流将每天 UTC 4 点（UTC+8 12点）自动运行，也可以手动触发
 
-> 飞书记账（可选）：LARK_APP_ID / LARK_APP_SECRET / LARK_APP_TOKEN / LARK_TABLE_ID 四项齐全时，每次签到会把各账号当日积分写入飞书多维表格（日期分行、账号分列，同日重复运行幂等覆盖）。表结构见 `docs/design-signin-record.md`。
+> 飞书记账（可选）：LARK_APP_ID / LARK_APP_SECRET / LARK_APP_TOKEN / LARK_TABLE_ID 四项齐全时，每次签到会把各账号当日积分写入飞书多维表格（日期分行、账号分列，同日重复运行幂等覆盖）。
+
+**表格全自动维护**：首次签到自动建表（表名「雨云签到记录」，含`编号`/`日期`文本字段），账号列按需自动创建（数字列），字段类型不符自动删除重建，写入失败自动重试。无需手动建表/配表头。
+
+**自检命令**（本地，需先配置 config.py）：
+```bash
+python ledger.py check   # 只读检查表结构
+python ledger.py fix     # 自动建表/修字段（表不存在时自动创建并回写 config.py）
+python ledger.py test    # 修复 + 写入测试行验证链路，验证后自动删除（默认）
+```
 
 ## 配置说明
 
